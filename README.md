@@ -1,4 +1,4 @@
-# 在线实训平台 DevOps 环境操作展示文档
+# 在线实训平台操作展示文档
 
 > 基于 GitLab + Jenkins + Docker Registry + Kubernetes 构建在线实训平台发布体系，实现代码托管、镜像构建、私有镜像仓库推送、K8s 滚动更新、统一 HTTPS 入口、监控日志观测和常见故障排查闭环。
 
