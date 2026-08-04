@@ -1,4 +1,131 @@
-# exam-platform
+# 在线实训平台 DevOps 环境操作展示文档
 
-[操作文档](./在线实训平台环境操作展示文档.md)
+> 基于 GitLab + Jenkins + Docker Registry + Kubernetes 构建在线实训平台发布体系，实现代码托管、镜像构建、私有镜像仓库推送、K8s 滚动更新、统一 HTTPS 入口、监控日志观测和常见故障排查闭环。
+
+------
+
+## 1. 项目环境总览
+
+### 1.1 环境入口
+
+| 系统 | 地址 | 说明 |
+| ---- | ---- | ---- |
+| 在线实训平台 | `https://exam.shaco.fun` | 平台业务访问入口 |
+| Jenkins | `https://jenkins.shaco.fun` | CI/CD 自动化构建与发布入口 |
+| Grafana | `https://grafana.shaco.fun` | 监控看板与日志查询入口 |
+| GitLab | `https://git.shaco.fun` | 代码仓库与镜像仓库入口 |
+
+### 1.2 环境展示
+
+```c
+本项目通过 shacofun59 作为统一 HTTPS 入口，对在线实训平台、Jenkins、Grafana、GitLab 等服务进行统一反向代理。业务访问、代码托管、自动化发布和监控观测均通过域名访问，降低了内部服务直接暴露风险，也方便后续维护和交付展示。
+```
+
+#### 业务系统入口访问
+
+![image-20260803112806500](./assets/image-20260803112806500.png)
+
+#### 业务系统首页
+
+![image-20260803113011915](./assets/image-20260803113011915.png)
+
+#### 自动化发布平台
+
+![image-20260803113206063](./assets/image-20260803113206063.png)
+
+#### 监控平台
+
+![image-20260803113705884](./assets/image-20260803113705884.png)
+
+#### 代码仓库
+
+![image-20260803114331103](./assets/image-20260803114331103.png)
+
+![image-20260803114301448](./assets/image-20260803114301448.png)
+
+## 2. 架构说明
+
+### 2.1 架构组成
+
+本项目整体采用：
+
+```text
+GitLab
+  -> Jenkins Pipeline
+  -> Docker 镜像构建
+  -> GitLab Container Registry
+  -> Kubernetes 滚动发布
+  -> Prometheus/Grafana/Loki 监控日志观测
+```
+
+### 2.2 展示
+
+![image-20260803150805785](./assets/image-20260803150805785.png)
+
+![image-20260803150857979](./assets/image-20260803150857979.png)
+
+```c
+平台从早期 Docker Compose 部署逐步升级到 Kubernetes 多节点集群部署。Kubernetes 负责服务编排、Pod 调度、滚动更新和资源隔离；Jenkins 负责自动化构建发布；GitLab 和 Registry 负责代码与镜像管理；Prometheus、Grafana、Loki 负责指标和日志观测
+```
+
+------
+
+## 3. GitLab 代码仓库使用
+
+```c
+项目代码托管在 GitLab 中，前端、后端、执行面和学生镜像按目录拆分。Jenkinsfile 位于仓库根目录，用于定义自动化构建、镜像推送和 Kubernetes 发布流程。通过 GitLab + Registry 实现代码、镜像和部署配置的统一管理。
+```
+
+![image-20260803152853786](./assets/image-20260803152853786.png)
+
+------
+
+## 4. Jenkins CI/CD 发布流程
+
+### 4.1 Jenkins 入口
+
+```c
+https://jenkins.shaco.fun
+```
+
+### ![image-20260803153130712](./assets/image-20260803153130712.png)
+
+
+
+
+
+### 4.2 Jenkins 发布后验证命令
+
+在 Kubernetes 控制节点执行：
+
+![image-20260803153419618](./assets/image-20260803153419618.png)
+
+查看滚动发布状态：
+
+![image-20260803153349987](./assets/image-20260803153349987.png)
+
+查看 Pod：
+
+![image-20260803153529337](./assets/image-20260803153529337.png)
+
+## 5. 在线实训平台业务入口展示
+
+### 5.1 平台入口
+
+```text
+https://exam.shaco.fun
+```
+
+考试/实训列表页面
+
+![image-20260803153840121](./assets/image-20260803153840121.png)
+
+创建或分配学生环境页面  
+
+![image-20260803153952637](./assets/image-20260803153952637.png)
+
+WebSSH/ttyd 页面
+
+![image-20260803154023982](./assets/image-20260803154023982.png)
+
 
